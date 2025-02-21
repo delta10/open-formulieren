@@ -274,6 +274,11 @@
     "description": "Label for add button used in MappingArrayInput",
     "originalDefault": "Add another value"
   },
+  "5R/Nms": {
+    "defaultMessage": "Case description for newly created Zaken in StUF-ZDS",
+    "description": "StUF-ZDS registration options 'zdsOmschrijving' helpText",
+    "originalDefault": "Case description for newly created Zaken in StUF-ZDS"
+  },
   "5obGLN": {
     "defaultMessage": "User defined",
     "description": "Variable source group label for user defined variables",
@@ -689,6 +694,11 @@
     "description": "Fixed metadata table source title",
     "originalDefault": "Source"
   },
+  "D+Beye": {
+    "defaultMessage": "Executive department for newly created Zaken in StUF-ZDS",
+    "description": "StUF-ZDS registration options 'zdsUitvoerendeAfdeling' helpText",
+    "originalDefault": "Executive department for newly created Zaken in StUF-ZDS"
+  },
   "D6NRQk": {
     "defaultMessage": "Detected problems in {count} logic rule(s).",
     "description": "Logic tab warning icon message",
@@ -868,6 +878,11 @@
     "defaultMessage": "is not equal to",
     "description": "\"!=\" operator description",
     "originalDefault": "is not equal to"
+  },
+  "FgIguF": {
+    "defaultMessage": "Zaaktoelichting",
+    "description": "StUF-ZDS registration options 'zdsToelichting' label",
+    "originalDefault": "Zaaktoelichting"
   },
   "FyNxJn": {
     "defaultMessage": "Text",
@@ -2084,6 +2099,11 @@
     "description": "Incomplete Submissions Removal Limit field label",
     "originalDefault": "Incomplete Submissions Removal Limit"
   },
+  "cDph9Y": {
+    "defaultMessage": "Zaakomschrijving",
+    "description": "StUF-ZDS registration options 'zdsOmschrijving' label",
+    "originalDefault": "Zaakomschrijving"
+  },
   "cID9dz": {
     "defaultMessage": "(complex value)",
     "description": "JSON editor: complex value representation",
@@ -2183,6 +2203,11 @@
     "defaultMessage": "Content for the introduction page that leads to the start page of the form. Leave blank to disable the introduction page.",
     "description": "form.introductionPageContent help text",
     "originalDefault": "Content for the introduction page that leads to the start page of the form. Leave blank to disable the introduction page."
+  },
+  "e6ylvT": {
+    "defaultMessage": "Case expanation for newly created Zaken in StUF-ZDS",
+    "description": "StUF-ZDS registration options 'zdsToelichting' helpText",
+    "originalDefault": "Case expanation for newly created Zaken in StUF-ZDS"
   },
   "eBk+W0": {
     "defaultMessage": "Manage process variables",
@@ -2963,6 +2988,11 @@
     "defaultMessage": "Sorry, we couldn't do that because you are logged out - this may be because your session expired.",
     "description": "Session expiry notice - API call failed with 401",
     "originalDefault": "Sorry, we couldn't do that because you are logged out - this may be because your session expired."
+  },
+  "ri4pGM": {
+    "defaultMessage": "Uitvoerende afdeling",
+    "description": "StUF-ZDS registration options 'zdsUitvoerendeAfdeling' label",
+    "originalDefault": "Uitvoerende afdeling"
   },
   "rkzjK3": {
     "defaultMessage": "JSON Schema target",

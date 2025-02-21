@@ -623,6 +623,12 @@
       "value": "Nog een waarde toevoegen"
     }
   ],
+  "5R/Nms": [
+    {
+      "type": 0,
+      "value": "Zaakomschrijving voor de nieuw aan te maken zaak."
+    }
+  ],
   "5XOrxo": [
     {
       "type": 0,
@@ -1587,6 +1593,12 @@
       "value": "Bron"
     }
   ],
+  "D+Beye": [
+    {
+      "type": 0,
+      "value": "Uitvoerende afdeling voor de nieuw aan te maken zaak."
+    }
+  ],
   "D0hDzV": [
     {
       "type": 1,
@@ -1982,6 +1994,12 @@
     {
       "type": 0,
       "value": "De beginwaarde voor dit veld, vóór dat gebruikersinteractie plaats vindt."
+    }
+  ],
+  "FgIguF": [
+    {
+      "type": 0,
+      "value": "Zaaktoelichting"
     }
   ],
   "Fn2vnC": [
@@ -4393,6 +4411,12 @@
       "value": "bewaartermijn voor sessies"
     }
   ],
+  "cDph9Y": [
+    {
+      "type": 0,
+      "value": "Zaakomschrijving"
+    }
+  ],
   "cID9dz": [
     {
       "type": 0,
@@ -4659,6 +4683,12 @@
     {
       "type": 0,
       "value": "Inhoud van de introductiepagina die naar de startpagina van het formulier leidt. Laat dit leeg om de introductiepagina uit te schakelen."
+    }
+  ],
+  "e6ylvT": [
+    {
+      "type": 0,
+      "value": "Zaaktoelichting voor de nieuw aan te maken zaak."
     }
   ],
   "eAmrdi": [
@@ -6317,6 +6347,12 @@
     {
       "type": 0,
       "value": "Excuses, we konden deze actie niet uitvoeren omdat u uitgelogd bent. Uw sessie is waarschijnlijk vervallen."
+    }
+  ],
+  "ri4pGM": [
+    {
+      "type": 0,
+      "value": "Uitvoerende afdeling"
     }
   ],
   "rkJLBr": [

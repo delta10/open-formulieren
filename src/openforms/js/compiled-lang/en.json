@@ -623,6 +623,12 @@
       "value": "Add another value"
     }
   ],
+  "5R/Nms": [
+    {
+      "type": 0,
+      "value": "Case description for newly created Zaken in StUF-ZDS"
+    }
+  ],
   "5XOrxo": [
     {
       "type": 0,
@@ -1583,6 +1589,12 @@
       "value": "Source"
     }
   ],
+  "D+Beye": [
+    {
+      "type": 0,
+      "value": "Executive department for newly created Zaken in StUF-ZDS"
+    }
+  ],
   "D0hDzV": [
     {
       "type": 1,
@@ -1961,6 +1973,12 @@
     {
       "type": 0,
       "value": "This will be the initial value for this field before user interaction."
+    }
+  ],
+  "FgIguF": [
+    {
+      "type": 0,
+      "value": "Zaaktoelichting"
     }
   ],
   "Fn2vnC": [
@@ -4375,6 +4393,12 @@
       "value": "Incomplete Submissions Removal Limit"
     }
   ],
+  "cDph9Y": [
+    {
+      "type": 0,
+      "value": "Zaakomschrijving"
+    }
+  ],
   "cID9dz": [
     {
       "type": 0,
@@ -4641,6 +4665,12 @@
     {
       "type": 0,
       "value": "Content for the introduction page that leads to the start page of the form. Leave blank to disable the introduction page."
+    }
+  ],
+  "e6ylvT": [
+    {
+      "type": 0,
+      "value": "Case expanation for newly created Zaken in StUF-ZDS"
     }
   ],
   "eAmrdi": [
@@ -6299,6 +6329,12 @@
     {
       "type": 0,
       "value": "Sorry, we couldn't do that because you are logged out - this may be because your session expired."
+    }
+  ],
+  "ri4pGM": [
+    {
+      "type": 0,
+      "value": "Uitvoerende afdeling"
     }
   ],
   "rkJLBr": [
