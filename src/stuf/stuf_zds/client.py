@@ -77,10 +77,12 @@ def xml_value(xml, xpath, namespaces=nsmap):
 
 class ZaakOptions(TypedDict):
     # from stuf_zds.plugin.ZaakOptionsSerializer
+    zds_toelichting: NotRequired[str]
     zds_zaaktype_code: str
     zds_zaaktype_omschrijving: NotRequired[str]
     zds_zaaktype_status_code: NotRequired[str]
     zds_zaaktype_status_omschrijving: NotRequired[str]
+    zds_uitvoerende_afdeling: NotRequired[str]
     zds_documenttype_omschrijving_inzending: str
     zds_zaakdoc_vertrouwelijkheid: Literal[
         "ZEER GEHEIM",
@@ -240,7 +242,13 @@ class Client(BaseClient):
             "zds_zaaktype_status_omschrijving": self.zds_options.get(
                 "zds_zaaktype_status_omschrijving"
             ),
+            "zaak_toelichting": self.zds_options.get(
+                "zds_toelichting"
+            ),
             "zaak_omschrijving": self.zds_options["omschrijving"],
+            "zds_uitvoerende_afdeling": self.zds_options.get(
+                "zds_uitvoerende_afdeling"
+            ),
             "co_signer": self.zds_options.get("cosigner"),
             "zaak_identificatie": zaak_identificatie,
             "extra": extra_data,

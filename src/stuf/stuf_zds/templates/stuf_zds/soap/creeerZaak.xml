@@ -20,6 +20,9 @@
         {% if zaak_omschrijving %}
             <ZKN:omschrijving>{{ zaak_omschrijving }}</ZKN:omschrijving>
         {% endif %}
+        {% if zaak_toelichting %}
+            <ZKN:toelichting>{{ zaak_toelichting }}</ZKN:toelichting>
+        {% endif %}
         {% for kenmerk in kenmerken %}
         <ZKN:kenmerk>
             <ZKN:kenmerk>{{ kenmerk }}</ZKN:kenmerk>
@@ -157,6 +160,15 @@
                 <ZKN:toelichting>Status gezet door verzendende applicatie.</ZKN:toelichting>
                 <ZKN:datumStatusGezet>{{ datum_vandaag }}</ZKN:datumStatusGezet>
             </ZKN:heeft>
+        {% endif %}
+        {% if zds_uitvoerende_afdeling %}
+            <ZKN:heeftAlsUitvoerende>
+                <ZKN:gerelateerde>
+                    <ZKN:organisatorischeEenheid>
+                        <ZKN:identificatie>{{ zds_uitvoerende_afdeling }}</ZKN:identificatie>
+                    </ZKN:organisatorischeEenheid>
+                </ZKN:gerelateerde>
+            </ZKN:heeftAlsUitvoerende>
         {% endif %}
     </ZKN:object>
 </ZKN:zakLk01>{% endblock %}

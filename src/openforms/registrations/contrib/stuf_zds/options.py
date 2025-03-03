@@ -40,6 +40,16 @@ class MappingSerializer(serializers.Serializer):
 
 
 class ZaakOptionsSerializer(JsonSchemaSerializerMixin, serializers.Serializer):
+    zds_omschrijving = serializers.CharField(
+        required=True,
+        allow_blank=True,
+        help_text=_("Zaakomschrijving for newly created Zaken in StUF-ZDS"),
+    )
+    zds_toelichting = serializers.CharField(
+        required=True,
+        allow_blank=True,
+        help_text=_("Zaaktoelichting for newly created Zaken in StUF-ZDS"),
+    )
     zds_zaaktype_code = serializers.CharField(
         required=True,
         help_text=_("Zaaktype code for newly created Zaken in StUF-ZDS"),
@@ -59,6 +69,12 @@ class ZaakOptionsSerializer(JsonSchemaSerializerMixin, serializers.Serializer):
         required=False,
         allow_blank=True,
         help_text=_("Zaaktype status omschrijving for newly created zaken in StUF-ZDS"),
+    )
+
+    zds_uitvoerende_afdeling = serializers.CharField(
+        required=True,
+        allow_blank=True,
+        help_text=_("Uitvoerende afdeling for newly created Zaken in StUF-ZDS"),
     )
 
     zds_documenttype_omschrijving_inzending = serializers.CharField(
