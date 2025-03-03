@@ -7,10 +7,13 @@ class MappingItem(TypedDict):
 
 
 class RegistrationOptions(TypedDict):
+    zds_omschrijving: NotRequired[str]
+    zds_toelichting: NotRequired[str]
     zds_zaaktype_code: str
     zds_zaaktype_omschrijving: NotRequired[str]
     zds_zaaktype_status_code: NotRequired[str]
     zds_zaaktype_status_omschrijving: NotRequired[str]
+    zds_uitvoerende_afdeling: NotRequired[str]
     zds_documenttype_omschrijving_inzending: str
     zds_zaakdoc_vertrouwelijkheid: Literal[
         "ZEER GEHEIM",

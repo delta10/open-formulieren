@@ -12,6 +12,8 @@ import {
 } from 'components/admin/forms/ValidationErrors';
 import {getChoicesFromSchema} from 'utils/json-schema';
 
+import CaseDescription from './fields/CaseDescription';
+import CaseExplanation from './fields/CaseExplanation';
 import CaseTypeCode from './fields/CaseTypeCode';
 import CaseTypeDescription from './fields/CaseTypeDescription';
 import DocumentConfidentialityLevel from './fields/DocumentConfidentialityLevel';
@@ -19,6 +21,7 @@ import DocumentTypeDescription from './fields/DocumentTypeDescription';
 import PaymentStatusUpdateMapping from './fields/PaymentStatusUpdateMapping';
 import StatusTypeCode from './fields/StatusTypeCode';
 import StatusTypeDescription from './fields/StatusTypeDescription';
+import ExecutiveDepartment from './fields/ExecutiveDepartment';
 
 const StufZDSOptionsFormFields = ({name, schema}) => {
   const validationErrors = useContext(ValidationErrorContext);
@@ -55,12 +58,15 @@ const StufZDSOptionsFormFields = ({name, schema}) => {
 
         <TabPanel>
           <Fieldset>
+            <CaseDescription />
+            <CaseExplanation />
             <CaseTypeCode />
             <CaseTypeDescription />
             <StatusTypeCode />
             <StatusTypeDescription />
             <DocumentTypeDescription />
             <DocumentConfidentialityLevel options={zdsZaakdocVertrouwelijkheidChoices} />
+            <ExecutiveDepartment />
           </Fieldset>
         </TabPanel>
 
