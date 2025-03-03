@@ -66,6 +66,18 @@ export default {
         schema: {
           type: 'object',
           properties: {
+            zdsOmschrijving: {
+              type: 'string',
+              minLength: 1,
+              title: 'Zds omschrijving',
+              description: 'Zaakomschrijving for newly created Zaken in StUF-ZDS',
+            },
+            zdsToelichting: {
+              type: 'string',
+              minLength: 1,
+              title: 'Zds toelichting',
+              description: 'Zaaktoelichting for newly created Zaken in StUF-ZDS',
+            },
             zdsZaaktypeCode: {
               type: 'string',
               minLength: 1,
@@ -89,6 +101,12 @@ export default {
               minLength: 1,
               title: 'Zds zaaktype status omschrijving',
               description: 'Zaaktype status omschrijving for newly created zaken in StUF-ZDS',
+            },
+            zdsUitvoerendeAfdeling: {
+              type: 'string',
+              minLength: 1,
+              title: 'Zds uitvoerende afdeling',
+              description: 'Uitvoerende afdeling for newly created Zaken in StUF-ZDS',
             },
             zdsDocumenttypeOmschrijvingInzending: {
               type: 'string',

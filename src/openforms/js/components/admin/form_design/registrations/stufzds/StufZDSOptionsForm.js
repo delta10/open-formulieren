@@ -26,6 +26,8 @@ const StufZDSOptionsForm = ({name, label, schema, formData, onChange}) => {
 
   const initialFormData = {
     // defaults
+    zdsOmschrijving: '',
+    zdsToelichting: '',
     zdsZaaktypeCode: '',
     zdsZaaktypeOmschrijving: '',
     zdsZaaktypeStatusCode: '',
@@ -34,6 +36,8 @@ const StufZDSOptionsForm = ({name, label, schema, formData, onChange}) => {
     zdsZaakdocVertrouwelijkheid: '',
     variablesMapping: [],
     variablesMappingInitiator: [],
+    zdsUitvoerendeAfdeling: '',
+    paymentStatusUpdateMapping: [],
     // existing configuration
     ...formData,
   };
@@ -90,10 +94,13 @@ StufZDSOptionsForm.propTypes = {
     ),
     zdsDocumenttypeOmschrijvingInzending: PropTypes.string,
     zdsZaakdocVertrouwelijkheid: PropTypes.string,
+    zdsOmschrijving: PropTypes.string,
+    zdsToelichting: PropTypes.string,
     zdsZaaktypeCode: PropTypes.string,
     zdsZaaktypeOmschrijving: PropTypes.string,
     zdsZaaktypeStatusCode: PropTypes.string,
     zdsZaaktypeStatusOmschrijving: PropTypes.string,
+    zdsUitvoerendeAfdeling: PropTypes.string,
   }),
   onChange: PropTypes.func.isRequired,
 };
