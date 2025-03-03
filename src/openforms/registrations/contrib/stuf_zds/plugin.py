@@ -34,6 +34,8 @@ from openforms.submissions.models import (
 )
 from openforms.utils.pdf import convert_html_to_pdf
 from openforms.variables.constants import FormVariableSources
+from openforms.submissions.models import Submission, SubmissionReport
+from openforms.template import render_from_string
 from openforms.variables.service import get_static_variables
 from stuf.stuf_zds.client import (
     NoServiceConfigured,
@@ -41,6 +43,7 @@ from stuf.stuf_zds.client import (
     ZaakOptions,
     get_client,
 )
+from openforms.variables.utils import get_variables_for_context
 from stuf.stuf_zds.models import StufZDSConfig
 
 from ...exceptions import RegistrationFailed
@@ -207,8 +210,9 @@ class StufZDSRegistration(BasePlugin[RegistrationOptions]):
     ) -> PreRegistrationResult:
         zaak_options: ZaakOptions = {
             **options,
-            "omschrijving": submission.form.admin_name,
+            "omschrijving": options['zds_omschrijving'] if options['zds_omschrijving'] else submission.form.admin_name,
         }
+
         with get_client(options=zaak_options) as client:
             # obtain a zaaknummer & save it - first, check if we have an intermediate result
             # from earlier attempts. if we do, do not generate a new number
@@ -308,13 +312,18 @@ class StufZDSRegistration(BasePlugin[RegistrationOptions]):
         """
         zaak_options: ZaakOptions = {
             **options,
-            "omschrijving": submission.form.admin_name,
+            "omschrijving": options['zds_omschrijving'] if options['zds_omschrijving'] else submission.form.admin_name,
             "cosigner": (
                 cosign.signing_details["value"]
                 if (cosign := submission.cosign_state).is_signed
                 else ""
             ),
         }
+
+        submission_context = get_variables_for_context(submission)
+        zaak_options["omschrijving"] = render_from_string(zaak_options["omschrijving"], submission_context)
+        zaak_options["zds_toelichting"] = render_from_string(zaak_options["zds_toelichting"], submission_context)
+        zaak_options["zds_uitvoerende_afdeling"] = render_from_string(zaak_options["zds_uitvoerende_afdeling"], submission_context)
 
         with get_client(options=zaak_options) as client:
             # Zaak ID reserved during the pre-registration phase
