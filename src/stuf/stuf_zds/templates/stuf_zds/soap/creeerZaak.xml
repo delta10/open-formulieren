@@ -26,7 +26,7 @@
         {% for kenmerk in kenmerken %}
         <ZKN:kenmerk>
             <ZKN:kenmerk>{{ kenmerk }}</ZKN:kenmerk>
-            <ZKN:bron>Open Formulieren</ZKN:bron>
+            <ZKN:bron>OpenFormulieren</ZKN:bron>
         </ZKN:kenmerk>
         {% endfor %}
         {% if locatie %}
