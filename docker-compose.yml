@@ -28,6 +28,8 @@ services:
       - db:/var/lib/postgresql/data
     networks:
       - open-forms-dev
+    ports:
+      - 5432:5432
 
   redis:
     image: redis:6
@@ -36,6 +38,8 @@ services:
       - open-forms-dev
     volumes:
       - data:/data
+    ports:
+      - 6379:6379
 
   smtp:
     image: namshi/smtp
