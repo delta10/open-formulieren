@@ -41,6 +41,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && /tmp/patches/apply.sh /usr/local/lib/python3.12/site-packages
 
+# Custom Delta10 packages
+RUN uv pip install --system git+https://github.com/delta10/json-logic-py.git@release/0.13.0
+
 # Stage 2 - Install frontend deps and build assets
 FROM node:20-bookworm-slim AS frontend-build
 
