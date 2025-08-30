@@ -98,7 +98,7 @@ def book_for_submission(submission: Submission) -> str:
     AppointmentInfo.objects.filter(submission=submission).delete()
 
     try:
-        appointment_id = book(appointment)
+        appointment_id = book(appointment, appointment.contact_details.get('appointment_remarks'))
     except AppointmentCreateFailed as e:
         logger.error("Appointment creation failed", exc_info=e)
         # This is displayed to the end-user!

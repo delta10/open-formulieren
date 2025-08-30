@@ -47,6 +47,11 @@ class FormDetailView(DetailView):
 
     object: Form
 
+    def get(self, request, *args, **kwargs):
+        remarks = request.GET.get('remarks', '')
+        request.session['appointment_remarks'] = remarks
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context[THEME_OVERRIDE_CONTEXT_VAR] = self.object.theme
