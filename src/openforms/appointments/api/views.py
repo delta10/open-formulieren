@@ -355,6 +355,11 @@ class CreateAppointmentView(SubmissionCompletionMixin, CreateAPIView):
 
     @transaction.atomic
     def create(self, request: Request, *args, **kwargs):
+        data = request.data if isinstance(request.data, dict) else {}
+        contact_details = data.get("contact_details", {})
+        contact_details['appointment_remarks'] = request.session['appointment_remarks']
+        data['contact_details'] = contact_details
+
         # ensure any previous attempts are deleted before creating a new one
         submission = self.extract_submission()
         Appointment.objects.filter(submission=submission).delete()
