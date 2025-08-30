@@ -47,6 +47,8 @@ def book(appointment: Appointment, remarks: str = "") -> str:
     ]
     location = Location(identifier=appointment.location, name="")
     normalized_data = plugin.normalize_contact_details(appointment.contact_details)
+    if "appointment_remarks" in normalized_data:
+        del normalized_data["appointment_remarks"]
     customer = CustomerDetails(details=normalized_data)
 
     logevent.appointment_register_start(appointment.submission, plugin)
@@ -97,7 +99,7 @@ def book_for_submission(submission: Submission) -> str:
     AppointmentInfo.objects.filter(submission=submission).delete()
 
     try:
-        appointment_id = book(appointment)
+        appointment_id = book(appointment, appointment.contact_details.get('appointment_remarks'))
     except AppointmentCreateFailed as exc:
         plugin = _get_plugin(appointment)
         logger.error(
