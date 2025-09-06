@@ -22,6 +22,7 @@ import {
   onObjectsAPIUserDefinedVariableEdit,
 } from './userDefinedVariableEditHandlers';
 import ZGWOptionsForm from './zgw';
+import LLVOptionsForm from './llv';
 
 /**
  * @typedef {{
@@ -71,4 +72,5 @@ export const BACKEND_OPTIONS_FORMS = {
   demo: {form: DemoOptionsForm},
   'failing-demo': {form: DemoOptionsForm},
   'exception-demo': {form: DemoOptionsForm},
+  'llv': {form: LLVOptionsForm},
 };
