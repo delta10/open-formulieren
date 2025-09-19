@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils.html import escapejs
 
 from openforms.formio.service import FormioData, recursive_apply
 from openforms.template import render_from_string, sandbox_backend
@@ -176,6 +177,17 @@ class ServiceFetchConfiguration(models.Model):
             "params": query_params,
             "headers": headers,
         }
+
+        def render_body_values(obj, ctx):
+            if isinstance(obj, dict):
+                return {k: render_body_values(v, ctx) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [render_body_values(v, ctx) for v in obj]
+            elif isinstance(obj, str):
+                return render_from_string(obj, ctx, backend=sandbox_backend, disable_autoescape=True)
+            else:
+                return obj
+
         if self.body is not None:
-            request_args["json"] = self.body
+            request_args["json"] = render_body_values(self.body, dict(context))
         return request_args
