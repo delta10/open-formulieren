@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 
 from zgw_consumers.client import build_client
 
+from ...exceptions import RegistrationFailed
+
 from openforms.submissions.models import Submission, SubmissionReport
 
 from ...base import BasePlugin  # openforms.registrations.base
@@ -20,6 +22,18 @@ PLUGIN_IDENTIFIER = 'llv'
 class LLVRegistration(BasePlugin):
     verbose_name = _("LLV")
     configuration_options = LLVOptionsSerializer
+
+    def _check_response(self, response, operation_name: str):
+        """Check response and raise RegistrationFailed if not successful."""
+        if not response.ok:
+            error_info = f"{operation_name} failed with status {response.status_code}"
+            try:
+                response_data = response.json()
+                error_info += f" Response: {response_data}"
+            except (ValueError, json.JSONDecodeError):
+                if hasattr(response, 'text'):
+                    error_info += f" Response body: {response.text}"
+            raise RegistrationFailed(error_info)
 
     def register_submission(self, submission: Submission, options: dict) -> dict:
         state = submission.load_submission_value_variables_state()
@@ -110,7 +124,7 @@ class LLVRegistration(BasePlugin):
             result = client.post(
                 create_path, data=json.dumps(api_data, cls=DjangoJSONEncoder), headers={"content-type": "application/json"}
             )
-            result.raise_for_status()
+            self._check_response(result, "Application creation")
 
             result_json = result.json() if result.content else {}
             aanvraagnummer = result_json.get("nummer")
@@ -134,7 +148,7 @@ class LLVRegistration(BasePlugin):
                 }
 
                 report_result = client.post(bijlage_path, data=data, files=files)
-                report_result.raise_for_status()
+                self._check_response(report_result, "Report upload")
 
                 # Upload attachments
                 for attachment in submission.attachments.order_by("pk"):
@@ -151,7 +165,7 @@ class LLVRegistration(BasePlugin):
                     }
 
                     attachment_result = client.post(bijlage_path, data=data, files=files)
-                    attachment_result.raise_for_status()
+                    self._check_response(attachment_result, "Attachment upload")
 
         return {"api_response": result_json}
 
