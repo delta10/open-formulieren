@@ -44,74 +44,109 @@ class LLVRegistration(BasePlugin):
             "nummer": submission.public_registration_reference,
             "soort": form_data.get("soort", "SCHOOL"),
             "vervoer": form_data.get("vervoer", "AV"),
-            "eigen_vervoer": form_data.get("eigen_vervoer", None),
-            "begeleiding": form_data.get("begeleiding", False),
+            "eigen_vervoer": form_data.get("eigenVervoer"),
+            "begeleiding": form_data.get("begeleiding"),
             "onderwijs": form_data.get("onderwijs", "BO"),
             "reden": form_data.get("reden", "HANDICAP"),
-            "verzamelinkomen": form_data.get("uwVerzamelinkomenIs"),
-            "datum_ingang": form_data.get("startdatum"),
-            "datum_einde": form_data.get("einddatum", None),
+            "verzamelinkomen": form_data.get("verzamelinkomen"),
+            "datum_ingang": form_data.get("datumIngang"),
+            "datum_einde": form_data.get("datumEinde"),
             "memo": form_data.get("memo"),
             "aanvrager": {
-                "bsn": form_static_data.get("auth_bsn"),  # niet aangeleverd in bronlijst
-                "voornamen": form_data.get("aanvrager_voornamen"),
-                "voorvoegsel": form_data.get("aanvrager_voorvoegsels"),
-                "achternaam": form_data.get("aanvrager_geslachtsnaam"),
-                "geslacht": form_data.get("aanvrager_geslacht", None),
-                "geboortedatum": form_data.get("aanvrager_geboortedatum", None),  # niet aangeleverd in bronlijst
-                "telefoon": form_data.get("aanvrager_telefoonnummer"),
-                "email": form_data.get("aanvrager_email"),
-                "iban": form_data.get("geefUwIbanRekeningnummer"),
-                "relatie": form_data.get("aanvrager_relatie"),
+                "bsn": form_static_data.get("auth_bsn"),
+                "voornamen": form_data.get("aanvragerVoornamen"),
+                "voorvoegsel": form_data.get("aanvragerVoorvoegsel"),
+                "achternaam": form_data.get("aanvragerAchternaam"),
+                "geslacht": form_data.get("aanvragerGeslacht"),
+                "geboortedatum": form_data.get("aanvragerGeboortedatum"),
+                "telefoon": form_data.get("aanvragerTelefoon"),
+                "email": form_data.get("aanvragerEmail"),
+                "iban": form_data.get("aanvragerIban"),
+                "relatie": form_data.get("aanvragerRelatie"),
                 "adres": {
-                    "straat": form_data.get("aanvrager_straatnaam"),
-                    "huisnummer": form_data.get("aanvrager_huisnummer"),
-                    "huisletter": form_data.get("aanvrager_huisletter"),
-                    "toevoeging": form_data.get("aanvrager_huisnrtoevoeging"),
-                    "postcode": form_data.get("aanvrager_postcode"),
-                    "plaats": form_data.get("woonplaats"),
-                    "land": form_data.get("aanvrager_land", "Nederland"),
-                    "coordinaten": None,
+                    "straat": form_data.get("aanvragerStraat"),
+                    "huisnummer": form_data.get("aanvragerHuisnummer"),
+                    "huisletter": form_data.get("aanvragerHuisletter"),
+                    "toevoeging": form_data.get("aanvragerToevoeging"),
+                    "postcode": form_data.get("aanvragerPostcode"),
+                    "plaats": form_data.get("aanvragerPlaats"),
+                    "land": form_data.get("aanvragerLand", "Nederland")
                 },
             },
             "leerling": {
-                "bsn": form_data.get("bsn"),
+                "bsn": form_data.get("leerlingBsn"),
                 "roepnaam": form_data.get("leerlingRoepnaam"),
-                "voorletters": "",
+                "voorletters": form_data.get("leerlingVoorletters"),
                 "voornamen": form_data.get("leerlingVoornamen"),
-                "voorvoegsel": form_data.get("leerlingVoorvoegsels"),
+                "voorvoegsel": form_data.get("leerlingVoorvoegsel"),
                 "achternaam": form_data.get("leerlingAchternaam"),
-                "geslacht": form_data.get("geslachtLeerling"),
-                "geboortedatum": form_data.get("llGeboortedatum"),
+                "geslacht": form_data.get("leerlingGeslacht"),
+                "geboortedatum": form_data.get("leerlingGeboortedatum"),
                 "adres": {
-                    "straat": form_data.get("straatnaam"),
+                    "straat": form_data.get("leerlingStraat"),
                     "huisnummer": form_data.get("leerlingHuisnummer"),
-                    "huisletter": None,
-                    "toevoeging": None,
+                    "huisletter": form_data.get("leerlingHuisletter"),
+                    "toevoeging": form_data.get("leerlingToevoeging"),
                     "postcode": form_data.get("leerlingPostcode"),
-                    "plaats": form_data.get("leerlingWoonplaats"),
-                    "land": form_data.get("leerlingLand", "Nederland"),
-                    "coordinaten": None,
+                    "plaats": form_data.get("leerlingPLaats"),
+                    "land": form_data.get("leerlingLand", "Nederland")
                 },
             },
             "school": {
-                "naam": form_data.get("schoolnaam"),
-                "brin": form_data.get("schoolVestiging"),
+                "naam": form_data.get("schoolNaam"),
+                "brin": form_data.get("schoolBrin"),
                 "vestiging": form_data.get("schoolVestiging"),
-                "schoolsoort": form_data.get("schoolSoort"),
-                "denominatie": form_data.get("denominatie", None),
-                "adres": {
-                    "straat": form_data.get("schoolStraat"),
-                    "huisnummer": form_data.get("schoolHuisnummer"),
-                    "huisletter": form_data.get("schoolHuisletter", None),
-                    "toevoeging": form_data.get("schoolToevoeging", None),
-                    "postcode": form_data.get("schoolPostcode"),
-                    "plaats": form_data.get("schoolPlaats"),
-                    "land": form_data.get("schoolLand", "Nederland"),
-                    "coordinaten": None,
-                },
+                "schoolsoort": form_data.get("schoolSoort")
             },
         }
+
+        if form_data.get("dagelijks") == "nee":
+            api_data["reisschema"] = {
+                "weken": "ALLE",
+                "toelichting": "Dit is de verduidelijking van het reisschema.",
+                "maandag": {
+                    "ochtend": form_data.get("maOchtend", False),
+                    "middag": form_data.get("maMiddag", False),
+                    "afwijkend_retour": form_data.get("maAfwijkendRetour", False),
+                },
+                "dinsdag": {
+                    "ochtend": form_data.get("diOchtend", False),
+                    "middag": form_data.get("diMiddag", False),
+                    "afwijkend_retour": form_data.get("diAfwijkendRetour", False),
+                },
+                "woensdag": {
+                    "ochtend": form_data.get("woOchtend", False),
+                    "middag": form_data.get("woMiddag", False),
+                    "afwijkend_retour": form_data.get("woAfwijkendRetour", False),
+                },
+                "donderdag": {
+                    "ochtend": form_data.get("doOchtend", False),
+                    "middag": form_data.get("doMiddag", False),
+                    "afwijkend_retour": form_data.get("doAfwijkendRetour", False),
+                },
+                "vrijdag": {
+                    "ochtend": form_data.get("vrOchtend", False),
+                    "middag": form_data.get("vrMiddag", False),
+                    "afwijkend_retour": form_data.get("vrAfwijkendRetour", False),
+                },
+            }
+
+        if form_data.get("afwijkendAdresOmschrijving"):
+            api_data["afwijkend_adres"] = {
+                "omschrijving": form_data.get("afwijkendAdresOmschrijving"),
+                "contact": form_data.get("afwijkendAdresContact"),
+                "telefoon": form_data.get("afwijkendAdresTelefoon"),
+                "email": form_data.get("afwijkendAdresEmail"),
+                "adres": {
+                    "straat": form_data.get("afwijkendAdresStraat"),
+                    "huisnummer": form_data.get("afwijkendAdresHuisnummer"),
+                    "huisletter": form_data.get("afwijkendAdresHuisletter"),
+                    "toevoeging": form_data.get("afwijkendAdresToevoeging"),
+                    "postcode": form_data.get("afwijkendAdresPostcode"),
+                    "plaats": form_data.get("afwijkendAdresPlaats"),
+                    "land": form_data.get("afwijkendAdresLand", "Nederland")
+                }
+            }
 
         service = options["service"]
         with build_client(service) as client:
