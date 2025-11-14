@@ -10,6 +10,7 @@ import StufZDSOptionsForm from './stufzds';
 import {onObjectsAPIUserDefinedVariableEdit} from './userDefinedVariableEditHandlers';
 import ZGWOptionsForm from './zgw';
 import LLVOptionsForm from './llv';
+import AppointmentOptionsForm from './appointment';
 
 /**
  * @typedef {{
@@ -52,4 +53,5 @@ export const BACKEND_OPTIONS_FORMS = {
   'failing-demo': {form: DemoOptionsForm},
   'exception-demo': {form: DemoOptionsForm},
   'llv': {form: LLVOptionsForm},
+  'appointment': {form: AppointmentOptionsForm},
 };
