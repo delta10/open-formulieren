@@ -26,7 +26,9 @@ def appointment_information(context):
     submission = context["_submission"]
     appointment = get_appointment(submission)
 
-    assert appointment
+    if not appointment:
+        return ""
+
     plugin_id = appointment.plugin
 
     plugin = get_plugin(plugin=plugin_id)
