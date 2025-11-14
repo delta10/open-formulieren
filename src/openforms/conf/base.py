@@ -228,6 +228,7 @@ INSTALLED_APPS = [
     "openforms.registrations.contrib.stuf_zds",
     "openforms.registrations.contrib.objects_api",
     "openforms.registrations.contrib.llv",
+    "openforms.registrations.contrib.appointment",
     "openforms.registrations.contrib.microsoft_graph.apps.MicrosoftGraphApp",
     "openforms.registrations.contrib.camunda.apps.CamundaApp",
     "openforms.registrations.contrib.generic_json",
