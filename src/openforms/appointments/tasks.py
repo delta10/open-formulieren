@@ -12,6 +12,11 @@ __all__ = ["maybe_register_appointment"]
 logger = structlog.stdlib.get_logger(__name__)
 
 
+def _uses_appointment_registration_backend(submission: Submission) -> bool:
+    backend_config = submission.registration_backend
+    return bool(backend_config and backend_config.backend == "appointment")
+
+
 @app.task(
     base=QueueOnce,
     ignore_result=False,
@@ -31,6 +36,13 @@ def maybe_register_appointment(submission_id: int) -> None | str:
     submission = Submission.objects.select_related("form").get(id=submission_id)
     log = logger.bind(submission_uuid=str(submission.uuid))
     log.info("appointment_registration")
+
+    if _uses_appointment_registration_backend(submission):
+        log.info(
+            "appointment_registration_skip",
+            reason="appointment_registration_backend_handles_booking",
+        )
+        return None
 
     try:
         return book_for_submission(submission=submission)
