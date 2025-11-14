@@ -16009,3 +16009,10 @@ msgstr "Engels"
 
 #~ msgid "ID of the product to get required fields for"
 #~ msgstr "Unieke sleutel van het product om verplichte velden voor op te halen."
+
+msgid ""
+"The selected appointment time is no longer available. Please choose a "
+"different time slot."
+msgstr ""
+"Het gekozen afspraaktijdstip is niet meer beschikbaar. Kies een ander "
+"tijdstip."

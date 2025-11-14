@@ -105,14 +105,30 @@ class EmailRegistration(BasePlugin[Options]):
         ):
             self.update_payment_status(submission=submission, options=options)
 
-    @staticmethod
     def render_registration_email(
-        submission: Submission, is_payment_update: bool, extra_context=None
+        self,
+        submission: Submission,
+        options: Options,
+        is_payment_update: bool,
+        extra_context=None,
     ):
         if extra_context is None:
             extra_context = {}
 
-        templates = get_registration_email_templates(submission)
+
+        default_config = EmailConfig.get_solo() # Get global default config
+        subject_template = options.get("email_subject") or default_config.subject
+        payment_subject_template = options.get("email_payment_subject") or default_config.payment_subject
+        html_body = options.get("email_content_template_html") or default_config.content_html
+        text_body = options.get("email_content_template_text") or default_config.content_text
+
+        from .utils import RegistrationEmailTemplates
+        templates = RegistrationEmailTemplates(
+            subject=subject_template,
+            payment_subject=payment_subject_template,
+            content_html=html_body,
+            content_text=text_body,
+        )
 
         # common kwargs and context
         renderer_kwargs = {
@@ -178,7 +194,7 @@ class EmailRegistration(BasePlugin[Options]):
         is_payment_update: bool = False,
     ) -> None:
         subject, html_content, text_content = self.render_registration_email(
-            submission, extra_context=extra_context, is_payment_update=is_payment_update
+            submission, options, is_payment_update=is_payment_update, extra_context=extra_context
         )
 
         attachments = []

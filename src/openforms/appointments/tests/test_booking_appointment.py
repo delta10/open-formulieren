@@ -20,6 +20,7 @@ from ..exceptions import (
 )
 from ..models import AppointmentInfo
 from ..registry import Registry
+from ..tasks import maybe_register_appointment
 from .factories import AppointmentFactory, AppointmentProductFactory
 
 register = Registry()
@@ -103,6 +104,20 @@ class BookAppointmentTests(TestCase):
             self.assertEqual(
                 events, {"appointment_register_start", "appointment_register_success"}
             )
+
+    def test_task_skips_appointment_registration_backend(self):
+        submission = SubmissionFactory.create(
+            form__is_appointment_form=True,
+            form__registration_backend="appointment",
+        )
+        AppointmentFactory.create(submission=submission, plugin="demo")
+
+        with patch("openforms.appointments.tasks.book_for_submission") as mock_book:
+            result = maybe_register_appointment(submission.id)
+
+        self.assertIsNone(result)
+        mock_book.assert_not_called()
+        self.assertFalse(AppointmentInfo.objects.exists())
 
     def test_plugin_invocation(self):
         submission = SubmissionFactory.create(form__is_appointment_form=True)

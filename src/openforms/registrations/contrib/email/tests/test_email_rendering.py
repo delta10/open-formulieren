@@ -1,14 +1,57 @@
 from unittest.mock import patch
 
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 
 from openforms.submissions.tests.factories import SubmissionFactory
 
 from ..models import EmailConfig
 from ..utils import get_registration_email_templates
+from ..views import EmailRegistrationTestView
 
 
 class RenderRegistrationEmailTests(TestCase):
+    def test_preview_uses_backend_templates(self):
+        submission = SubmissionFactory.create(
+            form__registration_backend="email",
+            form__registration_backend_options={
+                "to_emails": ["test@test.nl"],
+                "email_content_template_html": "<p>Custom HTML template</p>",
+                "email_content_template_text": "Custom text template",
+            },
+        )
+
+        for mode, expected in (
+            ("html", "<p>Custom HTML template</p>"),
+            ("text", "Custom text template\n"),
+        ):
+            with self.subTest(mode=mode):
+                view = EmailRegistrationTestView()
+                view.setup(RequestFactory().get("/", {"mode": mode}))
+                view.object = submission
+
+                self.assertEqual(view.get_email_content(), expected)
+
+    def test_preview_without_backend_uses_global_templates(self):
+        submission = SubmissionFactory.create()
+
+        with patch(
+            "openforms.registrations.contrib.email.plugin.EmailConfig.get_solo",
+            return_value=EmailConfig(
+                content_html="<p>Global HTML template</p>",
+                content_text="Global text template",
+            ),
+        ):
+            for mode, expected in (
+                ("html", "<p>Global HTML template</p>"),
+                ("text", "Global text template\n"),
+            ):
+                with self.subTest(mode=mode):
+                    view = EmailRegistrationTestView()
+                    view.setup(RequestFactory().get("/", {"mode": mode}))
+                    view.object = submission
+
+                    self.assertEqual(view.get_email_content(), expected)
+
     def test_only_global_template_used(self):
         submission = SubmissionFactory.create(
             form__registration_backend="email",
