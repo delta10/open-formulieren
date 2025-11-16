@@ -20,7 +20,7 @@ import {
   ServiceSelect,
 } from './fields';
 
-const LLVOptionsForm = ({name, label, schema, formData, onChange}) => {
+const AppointmentOptionsForm = ({name, label, schema, formData, onChange}) => {
   const validationErrors = useContext(ValidationErrorContext);
   const relevantErrors = filterErrors(name, validationErrors);
 
