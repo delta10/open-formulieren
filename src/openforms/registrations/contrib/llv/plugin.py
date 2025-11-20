@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from urllib.parse import urljoin
 
 from django.core.exceptions import SuspiciousOperation
@@ -35,6 +36,19 @@ class LLVRegistration(BasePlugin):
                     error_info += f" Response body: {response.text}"
             raise RegistrationFailed(error_info)
 
+    def _format_datetime(self, datetime_str: str | None) -> str | None:
+        """Convert datetime from ISO format to the format expected by LLV API."""
+        if not datetime_str:
+            return None
+        try:
+            # Parse ISO format datetime (e.g., "2024-11-08T00:00:00-02:00")
+            dt = datetime.fromisoformat(datetime_str)
+            # Format to "2009-01-30T00:00:00+0100" (without colon in timezone)
+            return dt.strftime("%Y-%m-%d")
+        except (ValueError, AttributeError):
+            # If parsing fails, return original value
+            return datetime_str
+
     def register_submission(self, submission: Submission, options: dict) -> dict:
         state = submission.load_submission_value_variables_state()
         form_data = state.get_data()
@@ -49,8 +63,8 @@ class LLVRegistration(BasePlugin):
             "onderwijs": form_data.get("onderwijs", "BO"),
             "reden": form_data.get("reden", "HANDICAP"),
             "verzamelinkomen": form_data.get("verzamelinkomen"),
-            "datum_ingang": form_data.get("datumIngang"),
-            "datum_einde": form_data.get("datumEinde"),
+            "datum_ingang": self._format_datetime(form_data.get("datumIngang")),
+            "datum_einde": self._format_datetime(form_data.get("datumEinde")),
             "memo": form_data.get("memo"),
             "aanvrager": {
                 "bsn": form_static_data.get("auth_bsn"),
@@ -58,7 +72,7 @@ class LLVRegistration(BasePlugin):
                 "voorvoegsel": form_data.get("aanvragerVoorvoegsel"),
                 "achternaam": form_data.get("aanvragerAchternaam"),
                 "geslacht": form_data.get("aanvragerGeslacht"),
-                "geboortedatum": form_data.get("aanvragerGeboortedatum"),
+                "geboortedatum": self._format_datetime(form_data.get("aanvragerGeboortedatum")),
                 "telefoon": form_data.get("aanvragerTelefoon"),
                 "email": form_data.get("aanvragerEmail"),
                 "iban": form_data.get("aanvragerIban"),
@@ -81,7 +95,7 @@ class LLVRegistration(BasePlugin):
                 "voorvoegsel": form_data.get("leerlingVoorvoegsel"),
                 "achternaam": form_data.get("leerlingAchternaam"),
                 "geslacht": form_data.get("leerlingGeslacht"),
-                "geboortedatum": form_data.get("leerlingGeboortedatum"),
+                "geboortedatum": self._format_datetime(form_data.get("leerlingGeboortedatum")),
                 "adres": {
                     "straat": form_data.get("leerlingStraat"),
                     "huisnummer": form_data.get("leerlingHuisnummer"),
