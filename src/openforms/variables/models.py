@@ -189,5 +189,5 @@ class ServiceFetchConfiguration(models.Model):
                 return obj
 
         if self.body is not None:
-            request_args["json"] = render_body_values(self.body, context)
+            request_args["json"] = render_body_values(self.body, dict(context))
         return request_args
