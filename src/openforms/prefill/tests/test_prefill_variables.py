@@ -33,7 +33,7 @@ from openforms.variables.constants import FormVariableDataTypes
 
 from ..contrib.demo.plugin import DemoPrefill
 from ..exceptions import PrefillSkipped
-from ..service import prefill_variables
+from ..service import apply_initial_data, prefill_variables
 from .utils import get_test_register
 
 CONFIGURATION = {
@@ -64,6 +64,26 @@ CONFIGURATION = {
 
 
 class PrefillVariablesTests(TestCase):
+    def test_applying_initial_data_to_textfield(self):
+        form_step = FormStepFactory.create(
+            form_definition__configuration={
+                "components": [
+                    {"key": "voornaam", "type": "textfield", "label": "Voornaam"}
+                ]
+            }
+        )
+        submission = SubmissionFactory.create(form=form_step.form)
+
+        for value, expected in [("Bart", "Bart"), (9, "9")]:
+            with self.subTest(value=value):
+                apply_initial_data(submission, {"voornaam": value})
+
+                variable = submission.variables_state.get_variable(key="voornaam")
+                self.assertEqual(variable.value, expected)
+                self.assertEqual(
+                    variable.source, SubmissionValueVariableSources.prefill
+                )
+
     @patch(
         "openforms.prefill.service.fetch_prefill_values_from_attribute",
         return_value={"voornamen": "Not so random string", "age": 123},
