@@ -162,6 +162,17 @@ class SubmissionSerializer(serializers.HyperlinkedModelSerializer[Submission]):
         write_only=True,
         default=False,  # type: ignore
     )
+    initial_data = serializers.JSONField(
+        label=_("initial data"),
+        help_text=_(
+            "Initial data to pre-populate form field values. "
+            "This should be a JSON object with field keys and their values."
+        ),
+        required=False,
+        write_only=True,
+        allow_null=True,
+        default=None,  # type: ignore
+    )
 
     class Meta:
         model = Submission
@@ -176,6 +187,7 @@ class SubmissionSerializer(serializers.HyperlinkedModelSerializer[Submission]):
             "form_url",
             "anonymous",
             "initial_data_reference",
+            "initial_data",
         )
         extra_kwargs = {
             "id": {
@@ -202,6 +214,7 @@ class SubmissionSerializer(serializers.HyperlinkedModelSerializer[Submission]):
 
     def create(self, validated_data):
         validated_data.pop("anonymous", None)
+        validated_data.pop("initial_data", None)  # Don't save to model
         return super().create(validated_data)
 
     def to_representation(self, instance):
