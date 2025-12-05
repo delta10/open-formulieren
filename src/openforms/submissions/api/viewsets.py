@@ -29,7 +29,7 @@ from openforms.authentication.service import (
 from openforms.forms.constants import SubmissionAllowedChoices
 from openforms.forms.models import Form, FormStep
 from openforms.logging import audit_logger
-from openforms.prefill.service import prefill_variables
+from openforms.prefill.service import apply_initial_data, prefill_variables
 from openforms.typing import is_authenticated_request
 from openforms.utils.patches.rest_framework_nested.viewsets import NestedViewSetMixin
 
@@ -42,6 +42,7 @@ from ..models import Submission, SubmissionStep
 from ..parsers import (
     IgnoreDataAndConfigFieldCamelCaseJSONParser,
     IgnoreDataAndConfigJSONRenderer,
+    IgnoreInitialDataFieldCamelCaseJSONParser,
 )
 from ..signals import submission_cosigned, submission_start
 from ..status import SubmissionProcessingStatus
@@ -133,6 +134,7 @@ class SubmissionViewSet(
     permission_classes = [ActiveSubmissionPermission]
     lookup_field = "uuid"
     pagination_class = pagination.PageNumberPagination
+    parser_classes = [IgnoreInitialDataFieldCamelCaseJSONParser]
 
     @property
     def throttle_scope(self):
@@ -192,6 +194,8 @@ class SubmissionViewSet(
         audit_logger.info("submission_start")
 
         prefill_variables(submission)
+        initial_data = serializer.validated_data.get("initial_data")
+        apply_initial_data(submission, initial_data)
         initialise_user_defined_variables(submission)
 
         logged_in = submission.is_authenticated
