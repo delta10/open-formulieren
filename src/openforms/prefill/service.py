@@ -59,6 +59,57 @@ from .sources import (
 logger = structlog.stdlib.get_logger(__name__)
 
 
+@elasticapm.capture_span(span_type="app.prefill")
+def apply_initial_data(submission: Submission, initial_data: dict[str, JSONEncodable] | None) -> None:
+    """Apply initial_data passed during submission creation to the submission state.
+
+    If initial_data is provided (a JSON object), this function will normalize
+    the values according to the component types and save them as prefill data.
+
+    This function should be called after prefill_variables to ensure initial_data
+    takes precedence over plugin-based prefill.
+
+    Components that are marked as disabled in the configuration are skipped to prevent
+    security issues where users could override values that should not be modifiable.
+
+    :param submission: The submission instance to apply initial data to.
+    :param initial_data: Dictionary with component keys and their initial values.
+    """
+    if not initial_data:
+        return
+
+    state = submission.load_submission_value_variables_state()
+    total_config_wrapper = submission.total_configuration_wrapper
+
+    normalized_data = {}
+    for key, value in initial_data.items():
+        try:
+            component = total_config_wrapper[key]
+
+            # Skip disabled components to prevent security issues
+            # Note: disabled is a component configuration property, not a runtime state
+            if component.get("disabled"):
+                logger.warning(
+                    "initial_data.disabled_component_skipped",
+                    submission_uuid=str(submission.uuid),
+                    component_key=key,
+                )
+                continue
+
+            normalized_value = normalize_value_for_component(component, value)
+            normalized_data[key] = normalized_value
+        except KeyError:
+            # Component doesn't exist in form, skip it
+            logger.warning(
+                "initial_data.component_not_found",
+                submission_uuid=str(submission.uuid),
+                component_key=key,
+            )
+            continue
+
+    if normalized_data:
+        state.save_prefill_data(normalized_data)
+
 def inject_prefill(
     configuration_wrapper: FormioConfigurationWrapper, submission: Submission
 ) -> None:

@@ -6,6 +6,10 @@ class IgnoreDataAndConfigFieldCamelCaseJSONParser(CamelCaseJSONParser):
     json_underscoreize = {"ignore_fields": ("data", "configuration")}
 
 
+class IgnoreInitialDataFieldCamelCaseJSONParser(CamelCaseJSONParser):
+    json_underscoreize = {"ignore_fields": ("initial_data",)}
+
+
 class IgnoreValueFieldCamelCaseJSONParser(CamelCaseJSONParser):
     json_underscoreize = {"ignore_fields": ("value",)}
 
