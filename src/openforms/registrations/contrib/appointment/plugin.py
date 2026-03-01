@@ -144,6 +144,13 @@ class AppointmentRegistration(BasePlugin):
             if options_serializer.is_valid():
                 # Register with the second backend
                 try:
+                    if not submission.registration_result:
+                        submission.registration_result = {}
+                    # Set temporary_internal_reference to make sure a kenmerk with OpenFormulieren is added to the StUF-ZDS registration
+                    if "temporary_internal_reference" not in submission.registration_result:
+                        submission.registration_result["temporary_internal_reference"] = submission.public_registration_reference
+                        submission.save()
+
                     second_result = second_plugin.register_submission(
                         submission, options_serializer.validated_data
                     )
