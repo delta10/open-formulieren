@@ -382,6 +382,35 @@ class FormNodeTests(TestCase):
 
             self.assertEqual(component_node.value, "WYSIWYG with markup")
 
+    def test_wysiwyg_component_empty_html_renders_empty_string(self):
+        component = {
+            "type": "content",
+            "key": "content",
+            "html": "",
+            "input": False,
+            "label": "Content",
+            "hidden": False,
+            "showInSummary": True,
+        }
+        submission = SubmissionFactory.create(
+            form__name="public name",
+            form__generate_minimal_setup=True,
+            form__formstep__form_definition__configuration={"components": [component]},
+        )
+        step = SubmissionStepFactory.create(
+            submission=submission,
+            form_step=submission.form.formstep_set.get(form__name="public name"),
+        )
+        state = submission.load_submission_value_variables_state()
+        step_data = state.get_data(submission_step=step)
+
+        renderer = Renderer(submission, mode=RenderModes.summary, as_html=False)
+        component_node = ComponentNode.build_node(
+            step_data=step_data, component=component, renderer=renderer
+        )
+
+        self.assertEqual(component_node.value, "")
+
     def test_wysiwyg_component_show_in_summary_disabled(self):
         """
         WYSIWYG is displayed in confirmation PDF and CLI rendering

@@ -176,6 +176,9 @@ class WYSIWYGNode(ComponentNode):
         if self.as_html:
             return mark_safe(content)
 
+        if not content:
+            return ""
+
         content_without_tags = strip_tags_plus(content)
         return content_without_tags.rstrip()
 
