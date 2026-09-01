@@ -15440,6 +15440,13 @@ msgstr "privacybeleid"
 #~ msgid "bsn claim"
 #~ msgstr "bsn-claim"
 
+msgid ""
+"The selected appointment time is no longer available. Please choose a "
+"different time slot."
+msgstr ""
+"Het gekozen afspraaktijdstip is niet meer beschikbaar. Kies een ander "
+"tijdstip."
+
 #~ msgid "LoA claim"
 #~ msgstr "LoA-claim"
 

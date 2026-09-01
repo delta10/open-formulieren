@@ -1,34 +1,33 @@
 import json
-import logging
 from datetime import datetime
 from typing import Any, override
-from urllib.parse import urljoin
 
-from django.core.exceptions import SuspiciousOperation
-from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.timezone import make_aware
 from django.utils.translation import gettext_lazy as _
 
-from zgw_consumers.client import build_client
-
-from ...exceptions import RegistrationFailed
+import structlog
 
 from openforms.appointments.constants import AppointmentDetailsStatus
 from openforms.appointments.core import book
 from openforms.appointments.exceptions import AppointmentCreateFailed
-from openforms.appointments.models import Appointment, AppointmentInfo, AppointmentProduct
+from openforms.appointments.models import (
+    Appointment,
+    AppointmentInfo,
+    AppointmentProduct,
+)
 from openforms.appointments.utils import get_plugin as get_appointment_plugin
 from openforms.logging import logevent
 from openforms.submissions.constants import RegistrationStatuses
-from openforms.submissions.models import Submission, SubmissionReport
+from openforms.submissions.models import Submission
 
 from ...base import BasePlugin  # openforms.registrations.base
+from ...exceptions import RegistrationFailed
 from ...registry import register  # openforms.registrations.registry
 from .config import AppointmentOptionsSerializer
 
-logger = logging.getLogger(__name__)
+logger = structlog.stdlib.get_logger(__name__)
 
-PLUGIN_IDENTIFIER = 'appointment'
+PLUGIN_IDENTIFIER = "appointment"
 
 
 @register(PLUGIN_IDENTIFIER)
@@ -44,14 +43,13 @@ class AppointmentRegistration(BasePlugin):
                 response_data = response.json()
                 error_info += f" Response: {response_data}"
             except (ValueError, json.JSONDecodeError):
-                if hasattr(response, 'text'):
+                if hasattr(response, "text"):
                     error_info += f" Response body: {response.text}"
             raise RegistrationFailed(error_info)
 
     def register_submission(self, submission: Submission, options: dict) -> dict:
         state = submission.load_submission_value_variables_state()
         form_data = state.get_data()
-        form_static_data = state.get_static_data()
         appointment_plugin = get_appointment_plugin()
 
         # Check if appointment was already created successfully in a previous attempt
@@ -60,25 +58,28 @@ class AppointmentRegistration(BasePlugin):
 
         if not appointment_already_created:
             # Parse datetime and make it timezone-aware
-            naive_datetime = datetime.strptime(f"{form_data.get('afspraakDatum')} {form_data.get('afspraakTijd')}", "%Y-%m-%d %H:%M")
+            naive_datetime = datetime.strptime(
+                f"{form_data.get('afspraakDatum')} {form_data.get('afspraakTijd')}",
+                "%Y-%m-%d %H:%M",
+            )
             aware_datetime = make_aware(naive_datetime)
 
             # Build contact details from form data
             contact_details = {}
-            if firstName := form_data.get('afspraakVoornaam'):
-                contact_details['firstName'] = firstName
-            if lastName := form_data.get('afspraakAchternaam'):
-                contact_details['lastName'] = lastName
-            if email := form_data.get('afspraakEmail'):
-                contact_details['email'] = email
-            if phone := form_data.get('afspraakTelefoonnummer'):
-                contact_details['phone'] = phone
-            if identificationNumber := form_data.get('afspraakIdentificatieNummer'):
-                contact_details['identificationNumber'] = identificationNumber
-            if externalId := form_data.get('afspraakExternID'):
-                contact_details['externalId'] = externalId
-            if dateOfBirth := form_data.get('afspraakGeboortedatum'):
-                contact_details['dateOfBirth'] = dateOfBirth
+            if firstName := form_data.get("afspraakVoornaam"):
+                contact_details["firstName"] = firstName
+            if lastName := form_data.get("afspraakAchternaam"):
+                contact_details["lastName"] = lastName
+            if email := form_data.get("afspraakEmail"):
+                contact_details["email"] = email
+            if phone := form_data.get("afspraakTelefoonnummer"):
+                contact_details["phone"] = phone
+            if identificationNumber := form_data.get("afspraakIdentificatieNummer"):
+                contact_details["identificationNumber"] = identificationNumber
+            if externalId := form_data.get("afspraakExternID"):
+                contact_details["externalId"] = externalId
+            if dateOfBirth := form_data.get("afspraakGeboortedatum"):
+                contact_details["dateOfBirth"] = dateOfBirth
 
             # Create Appointment object
             appointment = Appointment.objects.create(
@@ -100,9 +101,16 @@ class AppointmentRegistration(BasePlugin):
             AppointmentInfo.objects.filter(submission=submission).delete()
 
             try:
-                appointment_id = book(appointment, form_data.get('afspraakOpmerkingen', ''))
-                result: dict[str, Any] = {"appointment_id": appointment_id, "status": "success"}
-                submission.save_registration_status(RegistrationStatuses.in_progress, result)
+                appointment_id = book(
+                    appointment, form_data.get("afspraakOpmerkingen", "")
+                )
+                result: dict[str, Any] = {
+                    "appointment_id": appointment_id,
+                    "status": "success",
+                }
+                submission.save_registration_status(
+                    RegistrationStatuses.in_progress, result
+                )
             except AppointmentCreateFailed as e:
                 logger.error("Appointment creation failed", exc_info=e)
                 # This is displayed to the end-user!
@@ -115,7 +123,9 @@ class AppointmentRegistration(BasePlugin):
                     error_information=error_information,
                     submission=submission,
                 )
-                logevent.appointment_register_failure(appointment_info, appointment_plugin, e)
+                logevent.appointment_register_failure(
+                    appointment_info, appointment_plugin, e
+                )
                 raise RegistrationFailed("Unable to create appointment") from e
         else:
             # Reuse existing appointment result
@@ -129,7 +139,9 @@ class AppointmentRegistration(BasePlugin):
         registration_backends = list(submission.form.registration_backends.all())
         if len(registration_backends) > 1:
             second_backend = registration_backends[1]
-            logger.info(f"Triggering second registration backend: {second_backend.backend}")
+            logger.info(
+                "trigger_second_registration_backend", backend=second_backend.backend
+            )
 
             # Get the plugin for the second backend
             registry = second_backend._meta.get_field("backend").registry
@@ -147,35 +159,47 @@ class AppointmentRegistration(BasePlugin):
                     if not submission.registration_result:
                         submission.registration_result = {}
                     # Set temporary_internal_reference to make sure a kenmerk with OpenFormulieren is added to the StUF-ZDS registration
-                    if "temporary_internal_reference" not in submission.registration_result:
-                        submission.registration_result["temporary_internal_reference"] = submission.public_registration_reference
+                    if (
+                        "temporary_internal_reference"
+                        not in submission.registration_result
+                    ):
+                        submission.registration_result[
+                            "temporary_internal_reference"
+                        ] = submission.public_registration_reference
                         submission.save()
 
                     second_result = second_plugin.register_submission(
                         submission, options_serializer.validated_data
                     )
-                    logger.info(f"Second registration completed: {second_result}")
+                    logger.info("second_registration_completed", result=second_result)
                     # Add second registration result to the main result
                     result["second_registration"] = {
                         "backend": second_backend.backend,
                         "result": second_result,
                     }
                 except Exception as e:
-                    logger.error(f"Second registration failed: {e}", exc_info=e)
+                    logger.error("second_registration_failed", error=str(e), exc_info=e)
                     # Fail the whole registration if second backend fails
                     result["second_registration"] = {
                         "backend": second_backend.backend,
                         "error": str(e),
                     }
-                    raise RegistrationFailed(f"Second registration backend failed: {e}") from e
+                    raise RegistrationFailed(
+                        f"Second registration backend failed: {e}"
+                    ) from e
             else:
-                logger.error(f"Second backend options invalid: {options_serializer.errors}")
+                logger.error(
+                    "second_backend_options_invalid",
+                    errors=options_serializer.errors,
+                )
                 result["second_registration"] = {
                     "backend": second_backend.backend,
                     "error": "Invalid options",
                     "validation_errors": options_serializer.errors,
                 }
-                raise RegistrationFailed(f"Second registration backend has invalid options: {options_serializer.errors}")
+                raise RegistrationFailed(
+                    f"Second registration backend has invalid options: {options_serializer.errors}"
+                )
 
         return result
 
