@@ -9,3 +9,4 @@ class AppointmentAppConfig(AppConfig):
 
     def ready(self):
         from . import plugin  # noqa
+        from . import signals  # noqa
