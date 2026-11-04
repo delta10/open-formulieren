@@ -54,6 +54,9 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | b
     && mv /bin/versions/node/*/ /tmp/node \
     && rm -rf /tmp/node/bin/npm /tmp/node/lib/node_modules
 
+# Custom Delta10 packages
+RUN uv pip install --system git+https://github.com/delta10/json-logic-py.git@release/0.16.1
+
 # Stage 2 - Install frontend deps and build assets
 FROM node:20-bookworm-slim AS frontend-build
 
